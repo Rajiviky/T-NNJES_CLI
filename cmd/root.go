@@ -34,10 +34,15 @@ var rootCmd = &cobra.Command{
 			return err
 		}
 		if isJson {
-			return json.NewDecoder(os.Stdout).Decode(certDetails)
+			jsonData, err := json.MarshalIndent(certDetails, "", "    ")
+			if err != nil {
+				return fmt.Errorf("failed to generate JSON: %w", err)
+			}
+			fmt.Println(string(jsonData))
+			return nil
 		}
-		fmt.Printf("\nCID: %d\nDAID: %s\nIssuer: %s\nSubject: %s\nNotAfter: %s\nNotBefore: %s\n",
-			certDetails.CID, certDetails.DAID, certDetails.Issuer, certDetails.Subject, certDetails.NotAfter.Format(time.RFC822), certDetails.NotBefore.Format(time.RFC822))
+		fmt.Printf("\nCID: %d\nDAID: %s\nIssuer: %s\nSubject: %s\nNotAfter: %s\nNotBefore: %s\nFingerPrint: %s\n",
+			certDetails.CID, certDetails.DAID, certDetails.Issuer, certDetails.Subject, certDetails.NotAfter.Format(time.RFC822), certDetails.NotBefore.Format(time.RFC822), certDetails.FingerPrint)
 		return nil
 	},
 }
@@ -45,7 +50,7 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	rootCmd.Flags().StringVar(&daid, "daid", "", "Developer Account ID(required)")
 	rootCmd.Flags().IntVar(&cid, "cid", 0, " Credential ID(required)")
-	rootCmd.Flags().BoolVar(&isJson, "json", false, "Deatils in JSON format")
+	rootCmd.Flags().BoolVar(&isJson, "json", false, "Details in JSON format")
 	rootCmd.MarkFlagRequired("daid")
 	rootCmd.MarkFlagRequired("cid")
 
