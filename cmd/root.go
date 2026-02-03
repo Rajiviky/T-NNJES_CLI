@@ -13,9 +13,10 @@ import (
 )
 
 var (
-	daid   string
-	cid    int
-	isJson bool
+	daid      string
+	cid       int
+	isJson    bool
+	onlyValid bool
 )
 
 var rootCmd = &cobra.Command{
@@ -41,6 +42,11 @@ var rootCmd = &cobra.Command{
 			fmt.Println(string(jsonData))
 			return nil
 		}
+		if onlyValid && time.Now().After(certDetails.NotAfter) {
+			fmt.Fprintf(os.Stdout, "Certificate for %s (CID: %d) has expired.\n", daid, cid)
+			os.Exit(0)
+
+		}
 		fmt.Printf("\nCID: %d\nDAID: %s\nIssuer: %s\nSubject: %s\nNotAfter: %s\nNotBefore: %s\nFingerPrint: %s\n",
 			certDetails.CID, certDetails.DAID, certDetails.Issuer, certDetails.Subject, certDetails.NotAfter.Format(time.RFC822), certDetails.NotBefore.Format(time.RFC822), certDetails.FingerPrint)
 		return nil
@@ -51,10 +57,12 @@ func Execute() {
 	rootCmd.Flags().StringVar(&daid, "daid", "", "Developer Account ID(required)")
 	rootCmd.Flags().IntVar(&cid, "cid", 0, " Credential ID(required)")
 	rootCmd.Flags().BoolVar(&isJson, "json", false, "Details in JSON format")
+	rootCmd.Flags().BoolVar(&onlyValid, "onlyValid", false, "filter valid certificates")
 	rootCmd.MarkFlagRequired("daid")
 	rootCmd.MarkFlagRequired("cid")
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
+
 }
