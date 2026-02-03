@@ -1,6 +1,9 @@
 package cert
 
-import "time"
+import (
+	"encoding/pem"
+	"time"
+)
 
 type CertInfo struct {
 	CID         int       `json:"cid"`
@@ -10,4 +13,9 @@ type CertInfo struct {
 	NotBefore   time.Time `json:"notBefore"`
 	NotAfter    time.Time `json:"notAfter"`
 	FingerPrint string    `json:"fingerPrint"`
+}
+
+func ParseCertFields(resBody []byte, cid int, daid string) (*CertInfo, error) {
+
+	certInfo, _ := pem.Decode()
 }
