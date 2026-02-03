@@ -36,7 +36,7 @@ var rootCmd = &cobra.Command{
 		if isJson {
 			return json.NewDecoder(os.Stdout).Decode(certDetails)
 		}
-		fmt.Printf("\nCID: %d\nDAID: %s\nIssuer: %s\nSubject: %s\nNotAfter: %s\n, %s\nNotBefore:%s\n",
+		fmt.Printf("\nCID: %d\nDAID: %s\nIssuer: %s\nSubject: %s\nNotAfter: %s\nNotBefore: %s\n",
 			certDetails.CID, certDetails.DAID, certDetails.Issuer, certDetails.Subject, certDetails.NotAfter.Format(time.RFC822), certDetails.NotBefore.Format(time.RFC822))
 		return nil
 	},
