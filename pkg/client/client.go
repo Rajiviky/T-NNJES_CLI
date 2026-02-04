@@ -9,14 +9,16 @@ import (
 	"time"
 )
 
+var BaseURL string
+
 func GetCertficate(ctx context.Context, daid string, cid int) ([]byte, error) {
 
 	// in case we use daid with - in the flag
 	cleanDaid := strings.ReplaceAll(daid, "_", "")
 
-	url := fmt.Sprintf("https://idetrust.com/daid/%s/cid/%d", cleanDaid, cid)
+	BaseURL = fmt.Sprintf("https://idetrust.com/daid/%s/cid/%d", cleanDaid, cid)
 
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", BaseURL, nil)
 	if err != nil {
 		return nil, err
 	}
